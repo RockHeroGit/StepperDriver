@@ -29,7 +29,9 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* :::::::::::::: Constructor ::::::::::::: */
 Stepper::Stepper(){}
-Stepper::Stepper(GPIO_TypeDef *enGPIO, uint32_t enPIN, GPIO_TypeDef *dirGPIO, uint32_t dirPIN, GPIO_TypeDef *clkGPIO, uint32_t clkPIN, uint16_t  numberOfSteps, uint16_t  rpm)
+Stepper::Stepper(GPIO_TypeDef *enGPIO, uint32_t enPIN, GPIO_TypeDef *dirGPIO,
+		uint32_t dirPIN, GPIO_TypeDef *clkGPIO, uint32_t clkPIN,
+		uint16_t  numberOfSteps, uint16_t  rpm): CallBackFunk(nullptr)
 {
 
 	/* ~~~~~~~~~~~~~~~ Stepper param ~~~~~~~~~~~~~~~ */
@@ -75,7 +77,7 @@ void Stepper::SetSpeed(uint16_t rpm)
 }
 
 /* ::::::::::::::: Position ::::::::::::::: */
-void Stepper::Step(int16_t step)
+void Stepper::Step(int32_t step)
 {
 
 	/* ~~~~~~~~~~~~~~~ Check direction ~~~~~~~~~~~~~~~ */
@@ -103,8 +105,11 @@ void Stepper::Step(int16_t step)
 
 	}
 
+	if(CallBackFunk != nullptr)
+		CallBackFunk();
+
 }
-void Stepper::Step(int16_t step, StepperRun_T func)
+void Stepper::Step(int32_t step, StepperRun_T func)
 {
 
 	uint16_t count = 0;
@@ -137,10 +142,18 @@ void Stepper::Step(int16_t step, StepperRun_T func)
 
 	}
 
+	if(CallBackFunk != nullptr)
+		CallBackFunk();
+
 }
 void Stepper::StepAngle(float ang)
 {
-	Stepper::Step((int16_t)(ang / _angRatio));
+	Stepper::Step((int32_t)(ang / _angRatio));
+}
+
+void Stepper::SetCallBackAfterMovement(void (*CallBackFunk)())
+{
+	this->CallBackFunk = CallBackFunk;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~ */

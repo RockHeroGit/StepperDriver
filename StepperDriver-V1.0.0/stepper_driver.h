@@ -120,6 +120,8 @@ class Stepper
 	uint16_t       _dirPIN;
 	uint16_t       _clkPIN;
 
+	void (*CallBackFunk)();
+
 	public:
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~ Prototupe ~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -132,11 +134,13 @@ class Stepper
 	void SetSpeed(uint16_t rpm);
 
 	/* ::::::::::::::: Position ::::::::::::::: */
-	void Step(int16_t step);
-	void Step(int16_t step, StepperRun_T func);
+	void Step(int32_t step);
+	void Step(int32_t step, StepperRun_T func);
 
 	void StepAngle(float ang);
 	void StepAngle(float ang, StepperRun_T func);
+
+	void SetCallBackAfterMovement(void (*CallBackFunk)());
 
 };
 
